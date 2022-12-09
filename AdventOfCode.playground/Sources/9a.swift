@@ -14,7 +14,8 @@ let rowData = input.split(separator: "\n").map({ String($0) })
 
 var headX = 0
 var headY = 0
-var tail = (0..<9).map({ _ in return (0,0) })
+var tailX = 0
+var tailY = 0
 
 var visited = [(Int, Int)]()
 
@@ -38,20 +39,14 @@ for row in rowData {
         default:
             print("Unknown direction \(direction)")
         }
-        var previousKnot = (headX, headY)
-        // print("Head \(headX),\(headY)")
-        for i in 0..<tail.count {
-            let knot = tail[i]
-            if (max(abs(previousKnot.0-knot.0),abs(previousKnot.1-knot.1)) > 1) {
-                tail[i] = (knot.0 + (previousKnot.0 - knot.0).signum(),
-                           knot.1 + (previousKnot.1 - knot.1).signum())
+        if (max(abs(headX-tailX),abs(headY-tailY)) > 1) {
+            tailX += (headX - tailX).signum()
+            tailY += (headY - tailY).signum()
+            if !visited.contains(where: { ($0.0 == tailX && $0.1 == tailY) }) {
+                visited.append((tailX, tailY))
             }
-            previousKnot = tail[i]
-            // print("Knot \(i+1): \(previousKnot.0),\(previousKnot.1)")
         }
-        if !visited.contains(where: { ($0.0 == tail.last!.0 && $0.1 == tail.last!.1) }) {
-            visited.append((tail.last!.0, tail.last!.1))
-        }
+        // print("Head \(headX),\(headY), Tail \(tailX),\(tailY)")
     }
 }
 
