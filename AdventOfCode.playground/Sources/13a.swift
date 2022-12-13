@@ -87,21 +87,21 @@ func isNotInOrder(first: [Element], second: [Element]) -> ComparisonResult {
         } else {
             let firstElement = first[i]
             let secondElement = second[i]
-            // print("inspecting \(firstElement.description) and \(secondElement.description)")
+            print("inspecting \(firstElement.description) and \(secondElement.description)")
             
             if (firstElement.isNumber && secondElement.isNumber) {
                 if (secondElement.number! == firstElement.number!) {
                     // Equal
-                    // print("equal")
+                    print("equal")
                     continue
                 }
                 // Not equal
-                // print("not equal")
+                print("not equal")
                 return secondElement.number! < firstElement.number! ? .notInOrder : .inOrderDefinite
             } else {
                 let firstTransformedElement = firstElement.isNumber ? [firstElement] : firstElement.array!
                 let secondTransformedElement = secondElement.isNumber ? [secondElement] : secondElement.array!
-                // print("inspecting \(firstTransformedElement.description) and \(secondTransformedElement.description)")
+                print("inspecting \(firstTransformedElement.description) and \(secondTransformedElement.description)")
                 let partialResult = isNotInOrder(first: firstTransformedElement, second: secondTransformedElement)
                 if (partialResult == .inOrderDefinite) {
                     return .inOrderDefinite
@@ -118,32 +118,24 @@ func isNotInOrder(first: [Element], second: [Element]) -> ComparisonResult {
 let touples = input.split(separator: "\n\n").map({ String($0) })
 
 var indices = 0
-var packets: [[Element]] = []
 
 for (index, touple) in touples.enumerated() {
     let split = touple.split(separator: "\n").map({ String($0) })
     let first = processString(split[0])
+    print(split[0])
+    print(first.description)
     
     let second = processString(split[1])
+    print(split[1])
+    print(second.description)
     
-    packets.append(first)
-    packets.append(second)
+    let result = isNotInOrder(first: first, second: second)
+    if (result == .inOrderDefinite || result == .inOrderContinue) {
+        indices += (index + 1)
+    }
+    print((result == .inOrderContinue || result == .inOrderDefinite) ? "In order" : "Not in order")
+    
+    print("\n")
 }
 
-let firstPacket = processString("[[2]]")
-let secondPacket = processString("[[6]]")
-
-packets.append(firstPacket)
-packets.append(secondPacket)
-
-let sortedPackets = packets.sorted(by: { left, right in
-    let result = isNotInOrder(first: left, second: right)
-    return (result == .inOrderContinue || result == .inOrderDefinite)
-})
-
-let firstIndex = sortedPackets.firstIndex { packet in
-    return packet.description == "[[2]]"
-}
-let secondIndex = sortedPackets.firstIndex { packet in
-    return packet.description == "[[6]]"
-}
+print(indices)
